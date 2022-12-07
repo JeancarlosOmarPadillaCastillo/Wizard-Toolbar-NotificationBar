@@ -1,0 +1,307 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <h:head>
+        <title>Facelet Title</title>
+        <f:event listener="#{VentaC1.listar()}" type="preRenderView" />
+
+        <style>
+
+            .label {
+                width:20%;
+                padding:4px;
+            }
+
+            .value {
+                width:80%;
+                padding:4px;
+            }
+
+            .grid {
+                width:100%;
+            }
+
+            .error {
+                color: red;
+            }
+
+            .outputLabel {
+                font-weight: bold;
+            }
+
+            .grid {
+                width:33%;
+                padding:4px;
+            }
+            body{
+                background: #F6F6F6;
+            }
+            header {
+                width:101%; /* Establecemos que el header abarque el 100% del documento */
+                overflow:hidden; /* Eliminamos errores de float */
+                background:black;
+                margin-top:-10px;
+                margin-left: -10px;
+                height: 100px;
+
+            }
+
+            .wrapper {
+                width:90%; /* Establecemos que el ancho sera del 90% */
+                max-width:100%; /* Aqui le decimos que el ancho máximo sera de 1000px */
+                margin:auto; /* Centramos los elementos */
+                overflow:hidden; /* Eliminamos errores de float */
+;
+            }
+
+            header .logo {
+                color:#f2f2f2;
+                font-size:50px;
+                line-height:100px;
+                float:left;
+            }
+            .label {
+                width:20%;
+                padding:4px;
+            }
+
+            .value {
+                width:80%;
+                padding:4px;
+            }
+
+            .grid {
+                width:100%;
+            }
+
+            .error {
+                color: red;
+            }
+
+            .outputLabel {
+                font-weight: bold;
+            }
+
+            .grid {
+                width:33%;
+                padding:4px;
+            }
+            .top {
+                filter:alpha(opacity=80);
+                opacity:0.8;
+                background-color: blue;
+                padding:50px 0 0 50px;
+                z-index: 1000;
+            }
+        </style>
+    </h:head>
+    <h:body >
+        <p:growl id="mensaje" severity="info, fatal" showDetail="true" showSummary="true"  />
+        <p:growl id="growl-sticky" for="sticky-key" showDetail="true" showSummary="true" />
+
+        <header>
+            <div class="wrapper">
+                <div class="logo">SPEEDRIDER</div>
+            </div>
+        </header>
+
+
+
+    
+        <center>
+            <h1> Registro de Venta</h1>
+        </center>
+        <script>
+            function recargar () {
+            PF('bar').show();
+            window.location.href = window.location.href;
+        }
+        </script>
+
+
+        <center>
+            <p:notificationBar id="nobar" position="top" effect="slide" styleClass="top" widgetVar="bar">
+                <center>
+                <h:outputText value="Bienvenido...!!" style="font-size:36px;" />
+                </center>
+            </p:notificationBar>
+
+            <p:commandButton value="Show" onclick="PF('bar').show()" type="button" icon="pi pi-arrow-down" />
+            <p:commandButton value="Recargar" onclick="recargar()" />
+            
+                <h:form id="formFactura">
+
+                    <p:growl id="growl" sticky="true" showDetail="true" severity="info,fatal"/>
+
+                <p:wizard flowListener="#{VentaC1.onFlowProcess}">
+                    
+                    <p:tab id="personal" title="CLIENTE">
+                        <p:panel  id="Factura" header="CLIENTE">
+                            <p:messages />
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="DNI" />
+
+                                <p:commandButton value="Buscar" action="#{VentaC1.Filtrado()}" update="txtApellido txtDireccion txtCelular">
+                                    <p:inputText id="Nombre" value="#{VentaC1.cli.docclie}" maxlength="8"/>
+                                </p:commandButton>
+
+                                <p:outputLabel value="Apellido y Nombre"/>
+                                <p:outputLabel id="txtApellido" value="#{VentaC1.cli.apeclie}, #{VentaC1.cli.nomclie}"/>
+                                <p:outputLabel value="Gmail"/>
+                                <p:outputLabel id="txtDireccion" value="#{VentaC1.cli.emaclie}"/>
+                                <p:outputLabel value="Celular"/>
+                                <p:outputLabel id="txtCelular" value="#{VentaC1.cli.celclie}"/>
+                            </p:panelGrid>
+                        </p:panel>
+                    </p:tab>
+
+                    <p:tab id="address" title="MOTOS">
+                        <p:panel header="MOTOS">
+                            <p:messages />
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="Nombre del producto"/>
+                                <p:commandButton value="Mostrar" action="#{VentaC1.ojalafuncione()}" update="txtStock txtPrecio">
+                                    <p:autoComplete id="AutocompletarProducto" value="#{VentaC1.mot.MODMOT}" completeMethod="#{VentaC1.autocompletePrueba}" immediate="true" />
+                                </p:commandButton>
+                                <p:outputLabel value="Stock disponible"/>
+                                <p:outputLabel id="txtStock" value="#{VentaC1.mot.STOCK}" />
+                                <p:outputLabel  value="Precio"/>
+                                <p:outputLabel id="txtPrecio" value="#{VentaC1.mot.PREVENMOT}"/>
+                            </p:panelGrid>
+                        </p:panel>
+                    </p:tab>
+
+                    <p:tab id="contact" title="DETALLE">
+                        <p:panel header="DETALLE">
+                            <p:messages />
+                            <h:panelGrid columns="2" columnClasses="label, value">
+                                <p:outputLabel value="Cantidad Deseada"/>
+                                <p:inputText id="cantidad" value="#{VentaC1.mot.CANMOT}"/>
+                                <p:outputLabel for="button" value="Fecha" />
+                                <p:calendar id="button"  value="#{VentaC1.venta.FECVEN}" pattern="dd-MM-yyyy"/>
+                                <p:outputLabel value="Tipo de pago"/>
+                                <p:selectOneMenu id="tipo_de_pago"
+                                                 styleClass="ticket"
+                                                 style=" width: 225px" value="#{VentaC1.venta.FOR_PAG}">
+
+                                    <f:selectItem noSelectionOption="true"
+                                                  itemLabel="Seleccionar" />
+                                    <f:selectItem noSelectionOption="true"
+                                                  itemLabel="Efectivo" itemValue="Efectivo"/>
+                                    <f:selectItem noSelectionOption="true"
+                                                  itemLabel="Tarjeta" itemValue="Tarjeta" />
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:tab>
+
+                    <p:tab  title="CONFIRMACIÓN">
+                        <p:panel id="confirm" header="CONFIRMACIÓN">
+                            <h:panelGrid id="confirmation" columns="3" columnClasses="grid,grid,grid">
+                                <h:panelGrid columns="2" columnClasses="label, value">
+                                    <h:outputText value="Nombre " />
+                                    <h:outputText value="#{VentaC1.cli.nomclie}" styleClass="outputLabel"/>
+
+                                    <h:outputText value="Apellido " />
+                                    <h:outputText value="#{VentaC1.cli.apeclie}" styleClass="outputLabel"/>
+
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="2" columnClasses="label, value">
+
+                                    <h:outputText value="Producto " />
+                                    <h:outputText value="#{VentaC1.mot.MODMOT}" styleClass="outputLabel"/>
+
+                                    <h:outputText value="Marca " />
+                                    <h:outputText value="#{VentaC1.mot.MARMOT}" styleClass="outputLabel"/>
+
+                                    <h:outputText value="Color: " />
+                                    <h:outputText value="#{VentaC1.mot.COLMOT}" styleClass="outputLabel"/>
+
+                                    <h:outputText value="Stock " />
+                                    <h:outputText value="#{VentaC1.mot.STOCK}" styleClass="outputLabel"/>
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="2" columnClasses="label, value">
+                                    <h:outputText value="Cantidad " />
+                                    <h:outputText value="#{VentaC1.mot.CANMOT}" styleClass="outputLabel"/>
+                                    <h:outputText value="Fecha " />
+                                    <h:outputText value="#{VentaC1.venta.FECVEN}" styleClass="outputLabel" />
+                                    <h:outputText value="Categoria: " />
+                                    <h:outputText value="#{VentaC1.venta.FOR_PAG}" styleClass="outputLabel"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:tab>
+                    
+                </p:wizard>
+
+
+                <center>
+                    <p:toolbar>
+                        <f:facet name="left">
+                            <p:commandButton value="Limpiar" actionListener="#{VentaC1.limpiar()}" update="formFactura:Factura MostrarVenta:TabalaAgragar MostrarVenta:total mensaje" icon="pi pi-save"/>
+                            <p:commandButton value="Agregar" actionListener="#{VentaC1.manuel()}" update="MostrarVenta:TabalaAgragar MostrarVenta:total mensaje formFactura:confirm" icon="pi pi-save"/>
+                            <span class="ui-separator">
+                                <span class="ui-icon pi pi-ellipsis-v"></span>
+                            </span>
+                            <p:commandButton value="Registrar" actionListener="#{VentaC1.registrar()}" update="formFactura:Factura MostrarVenta:TabalaAgragar MostrarVenta:total mensaje MostrarVenta:tablventa" icon="pi pi-save"/>
+
+                        </f:facet>
+                    </p:toolbar>
+</center>
+
+            </h:form>
+
+
+            <h:form id="MostrarVenta">
+                <p:dataTable value="#{VentaC1.listaVB}" id="TabalaAgragar" var="tblagragar">
+                    <p:column headerText="ID motos" >
+                        <h:outputText value="#{tblagragar.IDMOT}"  />
+                    </p:column>  
+                    <p:column headerText="Cantidad" >
+                        <h:outputText value="#{tblagragar.CANTVENDET}"  />
+                    </p:column>
+                    <p:column headerText="precio unitario" >
+                        <h:outputText value="#{tblagragar.preciopol}"  />
+                    </p:column> 
+                    <p:column headerText="subtotal" >
+                        <h:outputText value="#{tblagragar.subtotal}"  />
+                    </p:column> 
+                </p:dataTable>
+                <h:outputText value="TOTAL: S/." style="font-size:300%"/>
+                <h:outputText id="total" value="#{VentaC1.total}" style="font-size:310%"/>
+                <p:spacer width="40 px"/>
+                <br/>                              
+
+                <br/>
+                <p:dataTable var="tblven" id="tablventa" value="#{VentaC1.lstVenta}" rows="5" 
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                             rowsPerPageTemplate="1,5,{ShowAll|'All'}" >
+                    <p:column headerText="ID venta" >
+                        <h:outputText value="#{tblven.IDVEN}"  />
+                    </p:column>  
+                    <p:column headerText="ID cliente." >
+                        <h:outputText value="#{tblven.IDCLI}"  />
+                    </p:column>    
+                    <p:column headerText="ID empleado" >
+                        <h:outputText value="#{tblven.IDEMP}"  />
+                    </p:column>  
+                    <p:column headerText="fecha de venta" >
+                        <h:outputText value="#{tblven.FECVEN}"  />
+                    </p:column>  
+                    <p:column headerText="froma de pago" >
+                        <h:outputText value="#{tblven.FOR_PAG}"  />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </center>
+    </h:body>
+</html>
